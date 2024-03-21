@@ -95,9 +95,16 @@ This script is hardcoded for transport to be placed in the folder /transport/
 
 Example setup on Ubuntu server:
 
-cd /
-git clone https://github.com/martinskou/teleport.git
-cd teleport
+> cd /
+> git clone https://github.com/martinskou/teleport.git
+> cd teleport
+> cd deploy
+> source deploy.sh
+> cd ..
+
+Edit config.json
+
+> systemctl start teleport.service
 
 
 
