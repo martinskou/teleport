@@ -22,6 +22,42 @@ It sound like FTP just with extra steps.
 
 ## Install
 
+Clone repro:
+
+> git clone https://github.com/martinskou/teleport.git
+
+Build teleport
+
+> go build .
+
+Build a config file
+
+> ./teleport
+
+Configure the server and authtoken in the config.json file.
+
+Repeat install on a server somewhere online.
+
+
+## Config
+
+There are a config.json file:
+
+{
+  "Server": "0.0.0.0",      
+  "Port": 31345,
+  "AuthToken": "1234",
+  "TmpFolder": "tmp",
+  "TimeOut": 3600
+}
+
+Server: IP or hostname of the Teleport server.
+Port: Port the Teleport server runs on.
+AuthToken: This token must be identical on the clients and the server.
+TmpFolder: On the server its where the files are store.
+TimeOut: Filen on the server are deleted after this interval (seconds)
+
+
 
 
 ## Usage
@@ -49,23 +85,4 @@ Folder /development/misc uploaded with retrieval code liyilak-0-qave
 > teleport download liyilak-0-qave /somewhere/dev
 
 Downloaded liyilak-0-qave (8831 bytes) to /somewhere/dev
-
-
-# Config
-
-There are a config.json file:
-
-{
-  "Server": "0.0.0.0",      
-  "Port": 31345,
-  "AuthToken": "1234",
-  "TmpFolder": "tmp",
-  "TimeOut": 3600
-}
-
-Server: IP or hostname of the Teleport server.
-Port: Port the Teleport server runs on.
-AuthToken: This token must be identical on the clients and the server.
-TmpFolder: On the server its where the files are store.
-TimeOut: Filen on the server are deleted after this interval (seconds)
 

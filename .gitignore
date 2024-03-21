@@ -22,3 +22,4 @@ go.work
 
 teleport
 tmp
+config.json
