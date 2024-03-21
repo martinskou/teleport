@@ -1,0 +1,11 @@
+[Unit]
+Description=Teleport
+
+[Service]
+Type=simple
+WorkingDirectory=/teleport
+ExecStart=/teleport/teleport server
+User=root
+
+[Install]
+WantedBy=multi-user.target

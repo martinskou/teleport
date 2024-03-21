@@ -86,3 +86,19 @@ Folder /development/misc uploaded with retrieval code liyilak-0-qave
 
 Downloaded liyilak-0-qave (8831 bytes) to /somewhere/dev
 
+
+## Server deployment
+
+You can look inside the deploy folder of this project to find a script and systemd config file to run the server.
+
+This script is hardcoded for transport to be placed in the folder /transport/
+
+Example setup on Ubuntu server:
+
+cd /
+git clone https://github.com/martinskou/teleport.git
+cd teleport
+
+
+
+
