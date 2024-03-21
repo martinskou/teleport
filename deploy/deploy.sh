@@ -1,6 +1,7 @@
-systemctl stop teleport.service
 cd ..
 go build .
+cd deploy
+systemctl stop teleport.service
 cp teleport.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable teleport.service
