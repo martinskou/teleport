@@ -2,10 +2,10 @@ package util
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"math/rand"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -35,6 +35,7 @@ func FileNameWithoutExt(fileName string) string {
 }
 
 func ZipFolder(source, target string) error {
+	// Thanks to ChatGTP for this
 	zipFile, err := os.Create(target)
 	if err != nil {
 		return err
@@ -92,6 +93,7 @@ func ZipFolder(source, target string) error {
 }
 
 func Unzip(src, dest string) error {
+	// Thanks to ChatGTP for this
 	// Open the ZIP file
 	r, err := zip.OpenReader(src)
 	if err != nil {
@@ -146,49 +148,32 @@ func Unzip(src, dest string) error {
 	return nil
 }
 
-// Lists of vowels and consonants for constructing words.
-var vowels = []rune{'a', 'e', 'i', 'o', 'u'}
-var consonants = []rune{'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'}
+func LoadJSON[T any](path string) (T, error) {
+	var data T
 
-func GenerateNonsenseWord(minLength, maxLength int) string {
-
-	// Determine the length of the word
-	length := rand.Intn(maxLength-minLength+1) + minLength
-
-	word := make([]rune, length)
-	for i := range word {
-		if i%2 == 0 {
-			// Even index: consonant
-			word[i] = consonants[rand.Intn(len(consonants))]
-		} else {
-			// Odd index: vowel
-			word[i] = vowels[rand.Intn(len(vowels))]
-		}
+	fileContent, err := os.ReadFile(path)
+	if err != nil {
+		return data, err
 	}
-	return string(word)
+
+	err = json.Unmarshal(fileContent, &data)
+	if err != nil {
+		return data, err
+	}
+
+	return data, nil
 }
 
-var (
-	numbers = []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"}
-	symbols = []string{"!", "@", "#", "*"}
-)
+func SaveJSON[T any](path string, data T) error {
+	jsonData, err := json.MarshalIndent(data, "", "  ")
+	if err != nil {
+		return err
+	}
 
-// GeneratePassword creates an easy-to-remember password
-func GeneratePassword() string {
+	err = os.WriteFile(path, jsonData, 0644)
+	if err != nil {
+		return err
+	}
 
-	// Randomly pick words and characters from the slices
-	w1 := GenerateNonsenseWord(4, 7)
-	w2 := GenerateNonsenseWord(2, 5)
-	number := numbers[rand.Intn(len(numbers))]
-	// symbol := symbols[rand.Intn(len(symbols))]
-
-	// Combine the components to form a password
-	password := []string{w1, number, w2}
-
-	// Shuffle the password to make it less predictable (optional)
-	//rand.Shuffle(len(password), func(i, j int) {
-	//	password[i], password[j] = password[j], password[i]
-	//})
-
-	return strings.Join(password, "-")
+	return nil
 }

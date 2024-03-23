@@ -113,17 +113,6 @@ func main() {
 					return List(cfg)
 				},
 			},
-			{
-				Name:        "test",
-				Aliases:     []string{"t"},
-				Usage:       "teleport test ",
-				UsageText:   "test",
-				Description: "test",
-				Action: func(cCtx *cli.Context) error {
-					fmt.Println(util.GeneratePassword())
-					return nil
-				},
-			},
 		},
 	}
 

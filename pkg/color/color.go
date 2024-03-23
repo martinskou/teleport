@@ -1,3 +1,5 @@
+// A simple console color package.
+
 package color
 
 import (

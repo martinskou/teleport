@@ -17,7 +17,7 @@ Teleport needs a server running somewhere. The server supports upload and downlo
    ::     :: ::::   :: ::::   :: ::::   ::       ::::: ::  ::   :::     ::   
    :     : :: ::   : :: : :  : :: ::    :         : :  :    :   : :     :    
 
-It sound like FTP just with extra steps.
+It sounds like FTP just with extra steps.
 
 
 ## Install
