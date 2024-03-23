@@ -20,7 +20,7 @@ Teleport uses regular HTTP to upload and download files.
        ::     :: ::::   :: ::::   :: ::::   ::       ::::: ::  ::   :::     ::   
        :     : :: ::   : :: : :  : :: ::    :         : :  :    :   : :     :    
  ```
- 
+
 *It sounds like FTP just with extra steps.*
 
 
@@ -58,21 +58,21 @@ Repeat install on a server somewhere online.
 
 There are a config.json file:
 
-{
+```
+ {
   "Server": "0.0.0.0",      
   "Port": 31345,
   "AuthToken": "1234",
   "TmpFolder": "tmp",
   "TimeOut": 3600
 }
-
+```
+ 
 Server: IP or hostname of the Teleport server.
 Port: Port the Teleport server runs on.
 AuthToken: This token must be identical on the clients and the server.
 TmpFolder: On the server its where the files are store.
 TimeOut: Filen on the server are deleted after this interval (seconds)
-
-
 
 
 ## Usage
