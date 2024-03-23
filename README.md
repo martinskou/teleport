@@ -113,5 +113,9 @@ Edit config.json
 > systemctl start teleport.service
 
 
+## Security
 
+Only security is the AuthToken which must match on the server and client.
+
+As no TLS/SSL is used, this token could be intercepted fx. on the LAN (man in the middle attack).
 
