@@ -2,9 +2,11 @@
 
 With Teleport you can easily send and retrieve folders.
 
-When you upload a folder, its automatically zipped and uploaded to a teleport server. After upload, you receive a download code. With this download code, you can download the folder from another machine. After download the folder is automatically unzipped and placed where you want it.
+When you upload a folder, its automatically zipped and uploaded to a teleport server. The upload is either named after the folder or supplying a name to the upload command. With this name, you can download the folder from another machine. After download the folder is automatically unzipped and placed where you want it (download argument).
 
 Teleport needs a server running somewhere. The server supports upload and download and a timeout after which any uploaded files are deleted.
+
+Teleport uses regular HTTP to upload and download files.
 
 @@@@@@@  @@@@@@@@  @@@       @@@@@@@@  @@@@@@@    @@@@@@   @@@@@@@   @@@@@@@ 
 @@@@@@@  @@@@@@@@  @@@       @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@ 
@@ -18,6 +20,17 @@ Teleport needs a server running somewhere. The server supports upload and downlo
    :     : :: ::   : :: : :  : :: ::    :         : :  :    :   : :     :    
 
 It sounds like FTP just with extra steps.
+
+
+## Example
+
+On home computer, upload a folder:
+
+> teleport upload /docs/report23
+
+On work computer, download the folder report23 and place it in documents:
+
+> teleport download report23 /documents
 
 
 ## Install
@@ -119,3 +132,16 @@ Only security is the AuthToken which must match on the server and client.
 
 As no TLS/SSL is used, this token could be intercepted fx. on the LAN (man in the middle attack).
 
+
+## Tests
+
+No tests was written during the production.
+
+
+## Requirements
+
+Go 1.22 is required.
+
+https://go.dev/
+
+Working on Linux and macOs, not tested on Windows.
