@@ -31,9 +31,15 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	for _, f := range filelst {
-		w.Write([]byte(f.Name()))
+		if !f.IsDir() {
+			afile := path.Join(h.cfg.TmpFolder, f.Name())
+			s, err := os.Stat(afile)
+			if err == nil {
+				age := time.Since(s.ModTime())
+				w.Write([]byte(fmt.Sprintf("%s (%s)", f.Name(), age.String())))
+			}
+		}
 	}
-
 }
 
 func (h *Handler) Download(w http.ResponseWriter, r *http.Request) {
@@ -128,11 +134,9 @@ func cleanup(cfg config.Config) {
 		} else {
 			for _, f := range files {
 				if !f.IsDir() {
-					fmt.Println(f.Name())
 					afile := path.Join(cfg.TmpFolder, f.Name())
 					s, err := os.Stat(afile)
 					if err == nil {
-						fmt.Println(time.Since(s.ModTime()))
 						if time.Since(s.ModTime()) > cfg.TimeOut*time.Second {
 							c.CM.Printf("[pink]Cleanup deleting %s[res]\n", f.Name())
 							os.Remove(afile)
@@ -143,7 +147,7 @@ func cleanup(cfg config.Config) {
 			}
 		}
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 }
 

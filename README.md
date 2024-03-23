@@ -76,15 +76,21 @@ The IP of the server must be placed in config.json
 
 > teleport upload /development/misc
 
-Folder /development/misc uploaded with retrieval code liyilak-0-qave
+Folder /development/misc uploaded with retrieval code misc
 
 
+3. List files on server:
 
-3. To retrieve the folder on same or different machine:
+> teleport list
 
-> teleport download liyilak-0-qave /somewhere/dev
+Will print a list of all files on the server.
 
-Downloaded liyilak-0-qave (8831 bytes) to /somewhere/dev
+
+4. To retrieve the folder on same or different machine:
+
+> teleport download misc /somewhere/dev
+
+Downloaded misc (8831 bytes) to /somewhere/dev
 
 
 ## Server deployment
