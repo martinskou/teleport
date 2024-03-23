@@ -35,6 +35,11 @@ On work computer, download the folder report23 and place it in documents:
 > teleport download report23 /documents
 
 
+## Why?
+
+I work on both mac and linux and often need to transfer a folder with a project or documents from the one to the other.
+
+
 ## Install
 
 Clone repro:
@@ -147,3 +152,10 @@ Go 1.22 is required.
 https://go.dev/
 
 Working on Linux and macOs, not tested on Windows.
+
+
+## Alternatives
+
+2 bash scripts. One that zips and uploads to an existing FTP server. And another the downloads and unzip.
+
+But where is the fun in that?
