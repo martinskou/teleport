@@ -8,6 +8,7 @@ Teleport needs a server running somewhere. The server supports upload and downlo
 
 Teleport uses regular HTTP to upload and download files.
 
+``
 @@@@@@@  @@@@@@@@  @@@       @@@@@@@@  @@@@@@@    @@@@@@   @@@@@@@   @@@@@@@ 
 @@@@@@@  @@@@@@@@  @@@       @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@ 
   @@!    @@!       @@!       @@!       @@!  @@@  @@!  @@@  @@!  @@@    @@!   
@@ -18,8 +19,9 @@ Teleport uses regular HTTP to upload and download files.
   :!:    :!:        :!:      :!:       :!:       :!:  !:!  :!:  !:!    :!:   
    ::     :: ::::   :: ::::   :: ::::   ::       ::::: ::  ::   :::     ::   
    :     : :: ::   : :: : :  : :: ::    :         : :  :    :   : :     :    
+``
 
-It sounds like FTP just with extra steps.
+*It sounds like FTP just with extra steps.*
 
 
 ## Example
