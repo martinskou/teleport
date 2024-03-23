@@ -29,14 +29,14 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "error", http.StatusNotFound)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	for _, f := range filelst {
 		if !f.IsDir() {
 			afile := path.Join(h.cfg.TmpFolder, f.Name())
 			s, err := os.Stat(afile)
 			if err == nil {
 				age := time.Since(s.ModTime())
-				w.Write([]byte(fmt.Sprintf("%s (%s)", f.Name(), age.String())))
+				w.Write([]byte(fmt.Sprintf("%s (%s)\n", f.Name(), age.String())))
 			}
 		}
 	}
