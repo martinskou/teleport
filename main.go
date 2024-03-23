@@ -59,7 +59,7 @@ func main() {
 			{
 				Name:        "upload",
 				Aliases:     []string{"u"},
-				Usage:       "teleport upload <folder>",
+				Usage:       "teleport upload <folder> <name>",
 				UsageText:   "send a folder",
 				Description: "send a folder",
 				Action: func(cCtx *cli.Context) error {
@@ -68,7 +68,11 @@ func main() {
 						if err != nil {
 							return err
 						}
-						return Send(cfg, sourcepath)
+						name := path.Base(sourcepath) // util.GeneratePassword()
+						if cCtx.NArg() > 1 {
+							name = cCtx.Args().Get(1)
+						}
+						return Upload(cfg, sourcepath, name)
 					} else {
 						return errors.New("missing argument <folder>")
 					}
@@ -96,7 +100,17 @@ func main() {
 					if err != nil {
 						return err
 					}
-					return Receive(cfg, code, destpath)
+					return Download(cfg, code, destpath)
+				},
+			},
+			{
+				Name:        "list",
+				Aliases:     []string{"l"},
+				Usage:       "teleport list ",
+				UsageText:   "list files on server",
+				Description: "list files on server",
+				Action: func(cCtx *cli.Context) error {
+					return List(cfg)
 				},
 			},
 			{
@@ -119,7 +133,37 @@ func main() {
 
 }
 
-func Send(cfg config.Config, sourcepath string) error {
+func List(cfg config.Config) error {
+	url := fmt.Sprintf("http://%s:%d/list/", cfg.Server, cfg.Port)
+	var b bytes.Buffer
+	req, err := http.NewRequest("GET", url, &b)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Auth-Token", cfg.AuthToken)
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf("bad status: %s", res.Status)
+	}
+
+	br, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(br))
+
+	return nil
+}
+
+func Upload(cfg config.Config, sourcepath string, name string) error {
 	sourceabs, err := filepath.Abs(sourcepath)
 	if err != nil {
 		return err
@@ -128,21 +172,20 @@ func Send(cfg config.Config, sourcepath string) error {
 		return fmt.Errorf(c.CM.Sprintf("[red]Source path [yellow]%s[red] not found[res]", sourceabs))
 	}
 
-	code := util.GeneratePassword()
-	filename := path.Join(os.TempDir(), code+".zip")
+	filename := path.Join(os.TempDir(), name+".zip")
 	util.ZipFolder(sourcepath, filename)
 	url := fmt.Sprintf("http://%s:%d/upload/", cfg.Server, cfg.Port)
 	err = UploadFile(filename, url, cfg.AuthToken)
 	if err != nil {
 		return errors.New(c.CM.Sprintf("[red]Unable to upload file (%s)[res]", err.Error()))
 	} else {
-		c.CM.Printf("[green]Folder [yellow]%s[green] uploaded with retrieval code [yellow]%s[res]\n", sourcepath, code)
+		c.CM.Printf("[green]Folder [yellow]%s[green] uploaded with retrieval code [yellow]%s[res]\n", sourcepath, name)
 	}
 	os.Remove(filename)
 	return nil
 }
 
-func Receive(cfg config.Config, code string, destpath string) error {
+func Download(cfg config.Config, code string, destpath string) error {
 
 	url := fmt.Sprintf("http://%s:%d/download/%s/", cfg.Server, cfg.Port, code)
 

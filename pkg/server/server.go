@@ -18,6 +18,24 @@ type Handler struct {
 	cfg config.Config
 }
 
+func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
+	if r.Header.Get("Auth-Token") != h.cfg.AuthToken {
+		http.Error(w, "Authentication error", http.StatusMethodNotAllowed)
+		return
+	}
+	filelst, err := os.ReadDir(h.cfg.TmpFolder)
+	if err != nil {
+		c.CM.Printf("[red]Unable to read file list (%s)[res]\n", err.Error())
+		http.Error(w, "error", http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	for _, f := range filelst {
+		w.Write([]byte(f.Name()))
+	}
+
+}
+
 func (h *Handler) Download(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Auth-Token") != h.cfg.AuthToken {
 		http.Error(w, "Authentication error", http.StatusMethodNotAllowed)
@@ -46,6 +64,7 @@ func (h *Handler) Download(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if r.Method != "POST" {
 		http.Error(w, "Unsupported method", http.StatusMethodNotAllowed)
 		return
@@ -97,6 +116,7 @@ func (h *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 
 	c.CM.Printf("[green]Received file [yellow]%s[green] (%d bytes) succesfully saved[res]\n", handler.Filename, n)
 
+	w.Write([]byte("success"))
 }
 
 func cleanup(cfg config.Config) {
@@ -130,10 +150,13 @@ func cleanup(cfg config.Config) {
 func Server(cfg config.Config) error {
 	c.CM.Printf("[green]Starting server on [yellow]0.0.0.0:%d[res]\n", cfg.Port)
 
+	// Delete all files in tmp
+
 	h := Handler{cfg: cfg}
 
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("/list/", h.List)
 	mux.HandleFunc("/upload/", h.Upload)
 	mux.HandleFunc("/download/{file}/", h.Download)
 

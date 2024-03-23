@@ -10,6 +10,7 @@ import (
 )
 
 type Config struct {
+	Name      string
 	Server    string
 	Port      int
 	AuthToken string
