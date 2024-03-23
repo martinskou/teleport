@@ -30,6 +30,10 @@ func ExistsPath(path string) bool {
 	return false
 }
 
+func FileNameWithoutExt(fileName string) string {
+	return strings.TrimSuffix(fileName, filepath.Ext(fileName))
+}
+
 func ZipFolder(source, target string) error {
 	zipFile, err := os.Create(target)
 	if err != nil {

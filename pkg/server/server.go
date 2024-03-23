@@ -36,7 +36,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 			s, err := os.Stat(afile)
 			if err == nil {
 				age := time.Since(s.ModTime())
-				w.Write([]byte(fmt.Sprintf("%s (%s)\n", f.Name(), age.String())))
+				w.Write([]byte(fmt.Sprintf("%s (%s)\n", util.FileNameWithoutExt(f.Name()), age.String())))
 			}
 		}
 	}
