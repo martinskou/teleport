@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"math/rand"
 	"path"
 	col "teleport/pkg/color"
 	"teleport/pkg/util"
@@ -19,7 +20,13 @@ type Config struct {
 func Load(paths ...string) (Config, error) {
 	// Load config.json places in any of paths.
 	// If not found, create a default and return an error.
-	cfg := Config{Server: "0.0.0.0", Port: 31345, TmpFolder: "tmp", AuthToken: "1234", TimeOut: 3600}
+	cfg := Config{
+		Server:    "0.0.0.0",
+		Port:      10000 + rand.Intn(10000),
+		TmpFolder: "tmp",
+		AuthToken: util.GenerateRandomAuthToken(32),
+		TimeOut:   3600,
+	}
 	found := false
 	for _, pospath := range paths {
 		cfile := path.Join(pospath, "config.json")

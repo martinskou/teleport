@@ -2,10 +2,12 @@ package util
 
 import (
 	"archive/zip"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -176,4 +178,13 @@ func SaveJSON[T any](path string, data T) error {
 	}
 
 	return nil
+}
+
+func GenerateRandomAuthToken(length int) string {
+	//	rand.Seed(time.Now().UnixNano())
+	bytes := make([]byte, length)
+	for i := range bytes {
+		bytes[i] = byte(rand.Intn(256))
+	}
+	return base64.URLEncoding.EncodeToString(bytes)
 }
