@@ -156,6 +156,10 @@ Working on Linux and macOs, not tested on Windows.
 
 ## Alternatives
 
+Dropbox, etc. if you are into that.
+
 2 bash scripts. One that zips and uploads to an existing FTP server. And another the downloads and unzip.
+
+Rsync to/from a server is also an option.
 
 But where is the fun in that?
