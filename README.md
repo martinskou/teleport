@@ -70,6 +70,10 @@ There are a config.json file:
   "AuthToken": "1234",
   "TmpFolder": "tmp",
   "TimeOut": 3600
+  "UseTLS": true,
+  "TLSCert": "",
+  "TLSKey": "",
+  "AllowSelfSigned": true
 }
 ```
  
@@ -78,6 +82,10 @@ Port: Port the Teleport server runs on.
 AuthToken: This token must be identical on the clients and the server.
 TmpFolder: On the server its where the files are store.
 TimeOut: Filen on the server are deleted after this interval (seconds)
+UseTLS: If true only transmit with TLS/SSL cert
+TLSCert: Certificate file
+TLSKey: Key file
+AllowSelfSigned: If true and TLSCert and TLSKey are empty, a selfsigned cert is used
 
 
 ## Usage
@@ -135,9 +143,7 @@ Edit config.json
 
 ## Security
 
-Only security is the AuthToken which must match on the server and client.
-
-As no TLS/SSL is used, this token could be intercepted fx. on the LAN (man in the middle attack).
+TLS/SSL can be configured in the config.json file.
 
 
 ## Tests
@@ -152,6 +158,8 @@ Go 1.22 is required.
 https://go.dev/
 
 Working on Linux and macOs, not tested on Windows.
+
+Uses https://github.com/urfave/cli for handleling the command line arguments.
 
 
 ## Alternatives

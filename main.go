@@ -18,7 +18,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var version = "0.1"
+var version = "0.2"
 
 func main() {
 
@@ -123,7 +123,8 @@ func main() {
 }
 
 func List(cfg config.Config) error {
-	url := fmt.Sprintf("http://%s:%d/list/", cfg.Server, cfg.Port)
+	url := fmt.Sprintf("%s://%s:%d/list/", cfg.GetProtocol(), cfg.Server, cfg.Port)
+
 	var b bytes.Buffer
 	req, err := http.NewRequest("GET", url, &b)
 	if err != nil {
@@ -131,7 +132,7 @@ func List(cfg config.Config) error {
 	}
 	req.Header.Set("Auth-Token", cfg.AuthToken)
 
-	client := &http.Client{}
+	client := *cfg.GetClient()
 	res, err := client.Do(req)
 	if err != nil {
 		return err
@@ -163,8 +164,8 @@ func Upload(cfg config.Config, sourcepath string, name string) error {
 
 	filename := path.Join(os.TempDir(), name+".zip")
 	util.ZipFolder(sourcepath, filename)
-	url := fmt.Sprintf("http://%s:%d/upload/", cfg.Server, cfg.Port)
-	err = UploadFile(filename, url, cfg.AuthToken)
+	url := fmt.Sprintf("%s://%s:%d/upload/", cfg.GetProtocol(), cfg.Server, cfg.Port)
+	err = UploadFile(filename, url, cfg)
 	if err != nil {
 		return errors.New(c.CM.Sprintf("[red]Unable to upload file (%s)[res]", err.Error()))
 	} else {
@@ -176,7 +177,7 @@ func Upload(cfg config.Config, sourcepath string, name string) error {
 
 func Download(cfg config.Config, code string, destpath string) error {
 
-	url := fmt.Sprintf("http://%s:%d/download/%s/", cfg.Server, cfg.Port, code)
+	url := fmt.Sprintf("%s://%s:%d/download/%s/", cfg.GetProtocol(), cfg.Server, cfg.Port, code)
 
 	var b bytes.Buffer
 	req, err := http.NewRequest("GET", url, &b)
@@ -186,7 +187,7 @@ func Download(cfg config.Config, code string, destpath string) error {
 	}
 	req.Header.Set("Auth-Token", cfg.AuthToken)
 
-	client := &http.Client{}
+	client := *cfg.GetClient()
 	resp, err := client.Do(req)
 	if err != nil {
 		c.CM.Printf("[red]Request error %s[res]\n", err.Error())
@@ -224,7 +225,7 @@ func Download(cfg config.Config, code string, destpath string) error {
 	return nil
 }
 
-func UploadFile(filePath, targetURL, auth_token string) error {
+func UploadFile(filePath, targetURL string, cfg config.Config) error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return err
@@ -247,9 +248,9 @@ func UploadFile(filePath, targetURL, auth_token string) error {
 		return err
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
-	req.Header.Set("Auth-Token", auth_token)
+	req.Header.Set("Auth-Token", cfg.AuthToken)
 
-	client := &http.Client{}
+	client := *cfg.GetClient()
 	res, err := client.Do(req)
 	if err != nil {
 		return err

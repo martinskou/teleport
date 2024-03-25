@@ -1,9 +1,10 @@
 package server
 
 import (
+	"crypto/tls"
+	"errors"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"os"
 	"path"
@@ -16,6 +17,11 @@ import (
 
 type Handler struct {
 	cfg config.Config
+}
+
+func (h *Handler) Test(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Write([]byte("Test"))
 }
 
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
@@ -154,7 +160,8 @@ func cleanup(cfg config.Config) {
 func Server(cfg config.Config) error {
 	c.CM.Printf("[green]Starting server on [yellow]0.0.0.0:%d[res]\n", cfg.Port)
 
-	// Delete all files in tmp
+	// Todo: Delete all files in tmp
+	go cleanup(cfg)
 
 	h := Handler{cfg: cfg}
 
@@ -163,18 +170,35 @@ func Server(cfg config.Config) error {
 	mux.HandleFunc("/list/", h.List)
 	mux.HandleFunc("/upload/", h.Upload)
 	mux.HandleFunc("/download/{file}/", h.Download)
+	mux.HandleFunc("/test/", h.Test)
 
 	srv := &http.Server{
+		Addr:    fmt.Sprintf("0.0.0.0:%d", cfg.Port),
 		Handler: mux,
+		//		TLSConfig: &tls.Config{Certificates: []tls.Certificate{servTLSCert}},
 	}
 
-	ln, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", cfg.Port))
-	if err != nil {
-		panic(err)
+	if cfg.UseTLS {
+
+		if cfg.TLSCert != "" && cfg.TLSKey != "" {
+			c.CM.Printf("[purple]Using TLS[res]\n")
+			return srv.ListenAndServeTLS(cfg.TLSCert, cfg.TLSKey)
+		}
+
+		if cfg.TLSCert == "" && cfg.TLSKey == "" && cfg.AllowSelfSigned {
+			c.CM.Printf("[purple]Using selfsigned TLS[res]\n")
+			_, _, _, servTLSCert, _ := NewTLSCredentials()
+			srv.TLSConfig = &tls.Config{Certificates: []tls.Certificate{servTLSCert}}
+			return srv.ListenAndServeTLS("", "") // cert given in config
+		}
+
+		return errors.New("no TLSCert or TLSKey supplied in config")
+
+	} else {
+
+		c.CM.Printf("[purple]No TLS[res]\n")
+		return srv.ListenAndServe()
+
 	}
-
-	go cleanup(cfg)
-
-	return srv.Serve(ln)
 
 }
